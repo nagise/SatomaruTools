@@ -79,7 +79,10 @@ public final class Pairs {
 	 * @param mapper インデックスと1つ目の値を受け取り、2つ目の値を作成する関数
 	 * @return ペアのリスト
 	 */
-	public static <F, S> List<Pair<F, S>> map(Iterator<? extends F> iterator, BiFunction<Integer, F, S> mapper) {
+	public static <F, S> List<Pair<F, S>> map(
+			Iterator<? extends F> iterator,
+			BiFunction<Integer, ? super F, ? extends S> mapper) {
+
 		ArrayList<Pair<F, S>> result = new ArrayList<>();
 		int index = 0;
 
@@ -98,7 +101,10 @@ public final class Pairs {
 	 * @param mapper インデックスと1つ目の値を受け取り、2つ目の値を作成する関数
 	 * @return ペアのリスト
 	 */
-	public static <F, S> List<Pair<F, S>> map(Iterable<? extends F> iterable, BiFunction<Integer, F, S> mapper) {
+	public static <F, S> List<Pair<F, S>> map(
+			Iterable<? extends F> iterable,
+			BiFunction<Integer, ? super F, ? extends S> mapper) {
+
 		return map(iterable.iterator(), mapper);
 	}
 
@@ -109,7 +115,7 @@ public final class Pairs {
 	 * @param mapper インデックスと1つ目の値を受け取り、2つ目の値を作成する関数
 	 * @return ペアのリスト
 	 */
-	public static <F, S> List<Pair<F, S>> map(F[] array, BiFunction<Integer, F, S> mapper) {
+	public static <F, S> List<Pair<F, S>> map(F[] array, BiFunction<Integer, ? super F, ? extends S> mapper) {
 		return map(Arrays.asList(array), mapper);
 	}
 
@@ -120,8 +126,11 @@ public final class Pairs {
 	 * @param function ペアを変換する関数
 	 * @return 変換されたリスト
 	 */
-	public static <F, S, X> List<X> compute(List<Pair<F, S>> pairs, BiFunction<F, S, X> function) {
-		return pairs.stream().map(p -> p.compute(function)).collect(Collectors.toList());
+	public static <F, S, X> List<X> compute(
+			List<Pair<F, S>> pairs,
+			BiFunction<? super F, ? super S, ? extends X> function) {
+
+		return pairs.stream().map(p -> function.apply(p.getFirst(), p.getSecond())).collect(Collectors.toList());
 	}
 
 	/**
@@ -130,8 +139,8 @@ public final class Pairs {
 	 * @param pairs ペアのリスト
 	 * @return 1つ目の値のリスト
 	 */
-	public static <F, S> List<F> firsts(List<Pair<F, S>> pairs) {
-		return compute(pairs, (f, s) -> f);
+	public static <F> List<F> firsts(List<Pair<? extends F, ?>> pairs) {
+		return pairs.stream().map(Pair::getFirst).collect(Collectors.toList());
 	}
 
 	/**
@@ -140,7 +149,7 @@ public final class Pairs {
 	 * @param pairs ペアのリスト
 	 * @return 2つ目の値のリスト
 	 */
-	public static <F, S> List<S> seconds(List<Pair<F, S>> pairs) {
-		return compute(pairs, (f, s) -> s);
+	public static <S> List<S> seconds(List<Pair<?, ? extends S>> pairs) {
+		return pairs.stream().map(Pair::getSecond).collect(Collectors.toList());
 	}
 }

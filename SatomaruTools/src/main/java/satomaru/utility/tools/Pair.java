@@ -54,7 +54,7 @@ public final class Pair<F, S> {
 	 * @param function 計算する関数
 	 * @return 計算結果
 	 */
-	public <X> X compute(BiFunction<F, S, X> function) {
+	public <X> X compute(BiFunction<? super F, ? super S, X> function) {
 		return function.apply(first, second);
 	}
 
@@ -65,7 +65,10 @@ public final class Pair<F, S> {
 	 * @param mapper2 2つ目の値をマッピングする関数
 	 * @return 新しいペア
 	 */
-	public <X, Y> Pair<X, Y> map(Function<F, X> mapper1, Function<S, Y> mapper2) {
+	public <X, Y> Pair<X, Y> map(
+			Function<? super F, ? extends X> mapper1,
+			Function<? super S, ? extends Y> mapper2) {
+
 		return new Pair<>(mapper1.apply(first), mapper2.apply(second));
 	}
 
@@ -79,7 +82,7 @@ public final class Pair<F, S> {
 	 * @param mapper 1つ目の値をマッピングする関数
 	 * @return 新しいペア
 	 */
-	public <X> Pair<X, S> map1(Function<F, X> mapper) {
+	public <X> Pair<X, S> map1(Function<? super F, ? extends X> mapper) {
 		return new Pair<>(mapper.apply(first), second);
 	}
 
@@ -93,7 +96,7 @@ public final class Pair<F, S> {
 	 * @param mapper 2つ目の値をマッピングする関数
 	 * @return 新しいペア
 	 */
-	public <X> Pair<F, X> map2(Function<S, X> mapper) {
+	public <X> Pair<F, X> map2(Function<? super S, ? extends X> mapper) {
 		return new Pair<>(first, mapper.apply(second));
 	}
 
@@ -103,7 +106,7 @@ public final class Pair<F, S> {
 	 * @param predicate 検査する関数
 	 * @return 検査に合格した場合はtrue
 	 */
-	public boolean test(BiPredicate<F, S> predicate) {
+	public boolean test(BiPredicate<? super F, ? super S> predicate) {
 		return predicate.test(first, second);
 	}
 
@@ -113,7 +116,7 @@ public final class Pair<F, S> {
 	 * @param predicate 検査する関数
 	 * @return 検査に合格した場合はtrue
 	 */
-	public boolean test1(Predicate<F> predicate) {
+	public boolean test1(Predicate<? super F> predicate) {
 		return predicate.test(first);
 	}
 
@@ -123,7 +126,7 @@ public final class Pair<F, S> {
 	 * @param predicate 検査する関数
 	 * @return 検査に合格した場合はtrue
 	 */
-	public boolean test2(Predicate<S> predicate) {
+	public boolean test2(Predicate<? super S> predicate) {
 		return predicate.test(second);
 	}
 

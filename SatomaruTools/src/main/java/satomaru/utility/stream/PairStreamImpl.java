@@ -40,7 +40,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <X> Stream<X> map(BiFunction<T, U, X> mapper) {
+	public <X> Stream<X> map(BiFunction<? super T, ? super U, ? extends X> mapper) {
 		return stream.map(p -> p.compute(mapper));
 	}
 
@@ -48,7 +48,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <X> PairStream<X, U> map1(Function<T, X> mapper) {
+	public <X> PairStream<X, U> map1(Function<? super T, ? extends X> mapper) {
 		return new PairStreamImpl<>(stream.map(p -> p.map1(mapper)));
 	}
 
@@ -56,7 +56,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <X> PairStream<T, X> map2(Function<U, X> mapper) {
+	public <X> PairStream<T, X> map2(Function<? super U, ? extends X> mapper) {
 		return new PairStreamImpl<>(stream.map(p -> p.map2(mapper)));
 	}
 
@@ -64,7 +64,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PairStream<T, U> filter(BiPredicate<T, U> predicate) {
+	public PairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate) {
 		return new PairStreamImpl<>(stream.filter(p -> p.test(predicate)));
 	}
 
@@ -72,7 +72,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PairStream<T, U> filter1(Predicate<T> predicate) {
+	public PairStream<T, U> filter1(Predicate<? super T> predicate) {
 		return new PairStreamImpl<>(stream.filter(p -> p.test1(predicate)));
 	}
 
@@ -80,7 +80,7 @@ final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public PairStream<T, U> filter2(Predicate<U> predicate) {
+	public PairStream<T, U> filter2(Predicate<? super U> predicate) {
 		return new PairStreamImpl<>(stream.filter(p -> p.test2(predicate)));
 	}
 }

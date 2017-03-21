@@ -29,7 +29,7 @@ public interface PairStream<T, U> {
 	 * @param mapper 2つの値をマッピングする関数
 	 * @return マッピングされた新しい Stream
 	 */
-	<X> Stream<X> map(BiFunction<T, U, X> mapper);
+	<X> Stream<X> map(BiFunction<? super T, ? super U, ? extends X> mapper);
 
 	/**
 	 * 1つ目の値だけが別の型にマッピングされた、新しい拡張 Stream を作成します。
@@ -37,7 +37,7 @@ public interface PairStream<T, U> {
 	 * @param mapper 1つ目の値をマッピングする関数
 	 * @return マッピングされた新しい拡張 Stream
 	 */
-	<X> PairStream<X, U> map1(Function<T, X> mapper);
+	<X> PairStream<X, U> map1(Function<? super T, ? extends X> mapper);
 
 	/**
 	 * 2つ目の値だけが別の型にマッピングされた、新しい拡張 Stream を作成します。
@@ -45,7 +45,7 @@ public interface PairStream<T, U> {
 	 * @param mapper 2つ目の値をマッピングする関数
 	 * @return マッピングされた新しい拡張 Stream
 	 */
-	<X> PairStream<T, X> map2(Function<U, X> mapper);
+	<X> PairStream<T, X> map2(Function<? super U, ? extends X> mapper);
 
 	/**
 	 * 2つの値を元にフィルタリングします。
@@ -53,7 +53,7 @@ public interface PairStream<T, U> {
 	 * @param predicate 2つの値を元にフィルタリングする関数
 	 * @return フィルタリングされた後の拡張 Stream
 	 */
-	PairStream<T, U> filter(BiPredicate<T, U> predicate);
+	PairStream<T, U> filter(BiPredicate<? super T, ? super U> predicate);
 
 	/**
 	 * 1つ目の値を元にフィルタリングします。
@@ -61,7 +61,7 @@ public interface PairStream<T, U> {
 	 * @param predicate 1つ目の値を元にフィルタリングする関数
 	 * @return フィルタリングされた後の拡張 Stream
 	 */
-	PairStream<T, U> filter1(Predicate<T> predicate);
+	PairStream<T, U> filter1(Predicate<? super T> predicate);
 
 	/**
 	 * 2つ目の値を元にフィルタリングします。
@@ -69,5 +69,5 @@ public interface PairStream<T, U> {
 	 * @param predicate 2つ目の値を元にフィルタリングする関数
 	 * @return フィルタリングされた後の拡張 Stream
 	 */
-	PairStream<T, U> filter2(Predicate<U> predicate);
+	PairStream<T, U> filter2(Predicate<? super U> predicate);
 }
