@@ -29,15 +29,10 @@ public final class Pairs {
 	 */
 	public static <F, S> List<Pair<F, S>> zip(Iterator<? extends F> first, Iterator<? extends S> second) {
 		ArrayList<Pair<F, S>> result = new ArrayList<>();
-		boolean has;
 
-		do {
-			has = first.hasNext() && second.hasNext();
-
-			if (has) {
-				result.add(new Pair<F, S>(first.next(), second.next()));
-			}
-		} while (has);
+		while (first.hasNext() && second.hasNext()) {
+			result.add(new Pair<F, S>(first.next(), second.next()));
+		}
 
 		return result;
 	}

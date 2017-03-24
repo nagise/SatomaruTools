@@ -1,8 +1,9 @@
 package satomaru.utility.stream;
 
+import java.util.Collection;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import satomaru.utility.tools.Pair;
@@ -54,21 +55,32 @@ public interface StreamEx<T> {
 	/**
 	 * インスタンスを生成します。
 	 * 
-	 * @param streamGetter 通常の Stream を取得する関数
+	 * @param collection コレクション
 	 * @return インスタンス
 	 */
-	static <T> StreamEx<T> of(Supplier<Stream<T>> streamGetter) {
-		return streamGetter::get;
+	static <T> StreamEx<T> of(Collection<T> collection) {
+		return of(collection.stream());
 	}
 
 	/**
 	 * インスタンスを生成します。
 	 * 
-	 * @param values 通常の Stream を構成する要素
+	 * @param values 値
 	 * @return インスタンス
 	 */
 	@SafeVarargs
 	static <T> StreamEx<T> of(T... values) {
 		return of(Stream.of(values));
+	}
+
+	/**
+	 * インスタンスを生成します。
+	 * 
+	 * @param seed 最初の値
+	 * @param function 前の値から、次の値を作成する関数
+	 * @return インスタンス
+	 */
+	static <T> StreamEx<T> iterate(T seed, UnaryOperator<T> function) {
+		return of(Stream.iterate(seed, function));
 	}
 }
