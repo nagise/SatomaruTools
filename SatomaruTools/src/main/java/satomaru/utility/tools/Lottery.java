@@ -2,7 +2,6 @@ package satomaru.utility.tools;
 
 import java.util.Collection;
 import java.util.Random;
-import java.util.function.Supplier;
 
 /**
  * 与えられた要素をランダムに選択する為のツールです。
@@ -19,67 +18,65 @@ public interface Lottery<T> {
 	T draw();
 
 	/**
-	 * インスタンスを生成します。
+	 * ロッテリーを作成するビルダーです。
 	 * 
-	 * @param values 選択される要素
-	 * @return インスタンス
+	 * @param <T> ロッテリーで扱う要素
 	 */
-	@SafeVarargs
-	static <T> Lottery<T> of(T... values) {
-		Random random = new Random();
-		return () -> values[random.nextInt(values.length)];
+	class Builder<T> {
+
+		/** ロッテリーで扱う要素。 */
+		private final T[] values;
+
+		/**
+		 * コンストラクタ。
+		 * 
+		 * @param values ロッテリーで扱う要素
+		 */
+		public Builder(T[] values) {
+			this.values = values;
+		}
+
+		/**
+		 * 標準的なロッテリーを作成します。
+		 * 
+		 * @return 標準的なロッテリー
+		 */
+		public Lottery<T> standard() {
+			Random random = new Random();
+			return () -> values[random.nextInt(values.length)];
+		}
 	}
 
 	/**
-	 * インスタンスを生成します。
+	 * ロッテリーを作成するビルダーを準備します。
 	 * 
-	 * @param values 選択される要素が格納されたコレクション
-	 * @return インスタンス
+	 * @param values ロッテリーで扱う要素
+	 * @return ビルダー
 	 */
-	static <T> Lottery<T> of(Collection<T> values) {
+	@SafeVarargs
+	static <T> Builder<T> build(T... values) {
+		return new Builder<>(values);
+	}
+
+	/**
+	 * ロッテリーを作成するビルダーを準備します。
+	 * 
+	 * @param values ロッテリーで扱う要素
+	 * @return ビルダー
+	 */
+	static <T> Builder<T> build(Collection<T> values) {
 		@SuppressWarnings("unchecked")
 		T[] array = (T[]) values.toArray();
-		return of(array);
+		return new Builder<>(array);
 	}
 
 	/**
-	 * インスタンスを生成します。
+	 * ロッテリーを作成するビルダーを準備します。
 	 * 
-	 * @param type 選択される要素に使用する列挙型
-	 * @return インスタンス
+	 * @param type ロッテリーで扱う列挙型
+	 * @return ビルダー
 	 */
-	static <T extends Enum<T>> Lottery<T> of(Class<T> type) {
-		return of(type.getEnumConstants());
-	}
-
-	/**
-	 * 関数を作成します。
-	 * 
-	 * @param values 選択される要素
-	 * @return 関数
-	 */
-	@SafeVarargs
-	static <T> Supplier<T> supplier(T... values) {
-		return of(values)::draw;
-	}
-
-	/**
-	 * 関数を作成します。
-	 * 
-	 * @param values 選択される要素が格納されたコレクション
-	 * @return 関数
-	 */
-	static <T> Supplier<T> supplier(Collection<T> values) {
-		return of(values)::draw;
-	}
-
-	/**
-	 * 関数を作成します。
-	 * 
-	 * @param type 選択される要素に使用する列挙型
-	 * @return 関数
-	 */
-	static <T extends Enum<T>> Supplier<T> supplier(Class<T> type) {
-		return of(type)::draw;
+	static <T extends Enum<T>> Builder<T> build(Class<T> type) {
+		return new Builder<>(type.getEnumConstants());
 	}
 }
