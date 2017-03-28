@@ -1,6 +1,11 @@
 package satomaru.utility.tools;
 
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -25,7 +30,7 @@ public interface Lottery<T> {
 	class Builder<T> {
 
 		/** ロッテリーで扱う要素。 */
-		private final T[] values;
+		private final List<T> values;
 
 		/**
 		 * コンストラクタ。
@@ -33,7 +38,16 @@ public interface Lottery<T> {
 		 * @param values ロッテリーで扱う要素
 		 */
 		public Builder(T[] values) {
-			this.values = values;
+			this.values = Arrays.asList(values);
+		}
+
+		/**
+		 * コンストラクタ。
+		 * 
+		 * @param values ロッテリーで扱う要素
+		 */
+		public Builder(Collection<T> values) {
+			this.values = new ArrayList<>(values);
 		}
 
 		/**
@@ -43,7 +57,19 @@ public interface Lottery<T> {
 		 */
 		public Lottery<T> standard() {
 			Random random = new Random();
-			return () -> values[random.nextInt(values.length)];
+			return () -> values.get(random.nextInt(values.size()));
+		}
+
+		/**
+		 * ボックスタイプ（引いた要素はなくなる）のロッテリーを作成します。
+		 * 
+		 * @return ボックスタイプ（引いた要素はなくなる）のロッテリー
+		 */
+		public Lottery<T> box() {
+			ArrayList<T> list = new ArrayList<>(values);
+			Collections.shuffle(list);
+			ArrayDeque<T> deque = new ArrayDeque<>(list);
+			return () -> deque.pollLast();
 		}
 	}
 
@@ -65,9 +91,7 @@ public interface Lottery<T> {
 	 * @return ビルダー
 	 */
 	static <T> Builder<T> build(Collection<T> values) {
-		@SuppressWarnings("unchecked")
-		T[] array = (T[]) values.toArray();
-		return new Builder<>(array);
+		return new Builder<>(values);
 	}
 
 	/**
