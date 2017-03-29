@@ -29,12 +29,16 @@ public final class Result<T> {
 	/**
 	 * 処理を実行して、リザルトのインスタンスを作成します。
 	 * 
+	 * <p>
+	 * 実行結果がnullの場合は、NullPointerExceptionが発生した扱いになります。
+	 * </p>
+	 * 
 	 * @param invoker 実行する処理
 	 * @return リザルトのインスタンス
 	 */
 	public static <T> Result<T> of(Invoker<T> invoker) {
 		try {
-			return new Result<>(Optional.ofNullable(invoker.invoke()), Optional.empty());
+			return new Result<>(Optional.of(invoker.invoke()), Optional.empty());
 		} catch (Exception e) {
 			return new Result<>(Optional.empty(), Optional.of(e));
 		}
@@ -115,7 +119,7 @@ public final class Result<T> {
 	 * @return 例外が発生しなかった場合はtrue
 	 */
 	public boolean isOk() {
-		return !exception.isPresent();
+		return value.isPresent();
 	}
 
 	/**
@@ -134,10 +138,6 @@ public final class Result<T> {
 	 * @throws Exception 例外が発生した場合
 	 */
 	public T unwrap() throws Exception {
-		if (exception.isPresent()) {
-			throw exception.get();
-		}
-
-		return value.orElse(null);
+		return value.orElseThrow(exception::get);
 	}
 }
