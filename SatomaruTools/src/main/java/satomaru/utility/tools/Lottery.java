@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -20,7 +21,7 @@ public interface Lottery<T> {
 	 * 
 	 * @return 選択された要素
 	 */
-	T draw();
+	Optional<T> draw();
 
 	/**
 	 * ロッテリーを作成するビルダーです。
@@ -57,7 +58,7 @@ public interface Lottery<T> {
 		 */
 		public Lottery<T> standard() {
 			Random random = new Random();
-			return () -> values.get(random.nextInt(values.size()));
+			return () -> Optional.of(values.get(random.nextInt(values.size())));
 		}
 
 		/**
@@ -69,7 +70,7 @@ public interface Lottery<T> {
 			ArrayList<T> list = new ArrayList<>(values);
 			Collections.shuffle(list);
 			ArrayDeque<T> deque = new ArrayDeque<>(list);
-			return () -> deque.pollLast();
+			return () -> Optional.ofNullable(deque.pollLast());
 		}
 	}
 
