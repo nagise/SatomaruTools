@@ -2,6 +2,7 @@ package satomaru.utility.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -61,17 +62,14 @@ public class FunctionIterator<E> implements Iterator<E> {
 	/** 次の値を作る関数。 */
 	private final BiFunction<Integer, E, E> function;
 
+	/** 現在の値。 */
+	private Optional<E> value;
+
 	/** インデックス。 */
 	private int index;
 
-	/** 直前の値。 */
-	private E prev;
-
-	/** 次の値。 */
-	private E value;
-
 	/** 次の値が算出済の場合はtrue。 */
-	private boolean executed;
+	private boolean calculated;
 
 	/**
 	 * コンストラクタ。
@@ -81,7 +79,7 @@ public class FunctionIterator<E> implements Iterator<E> {
 	 */
 	private FunctionIterator(BiFunction<Integer, E, E> function, E prev) {
 		this.function = function;
-		this.value = prev;
+		this.value = Optional.ofNullable(prev);
 	}
 
 	/**
@@ -91,7 +89,8 @@ public class FunctionIterator<E> implements Iterator<E> {
 	 */
 	@Override
 	public boolean hasNext() {
-		return execute() != null;
+		calculate();
+		return value.isPresent();
 	}
 
 	/**
@@ -101,14 +100,9 @@ public class FunctionIterator<E> implements Iterator<E> {
 	 */
 	@Override
 	public E next() {
-		E value = execute();
-
-		if (value == null) {
-			throw new NoSuchElementException();
-		}
-
-		executed = false;
-		return value;
+		calculate();
+		calculated = false;
+		return value.orElseThrow(NoSuchElementException::new);
 	}
 
 	/**
@@ -116,14 +110,12 @@ public class FunctionIterator<E> implements Iterator<E> {
 	 * 
 	 * @return 次の値
 	 */
-	private E execute() {
-		if (executed) {
-			return value;
+	private void calculate() {
+		if (calculated) {
+			return;
 		}
 
-		prev = value;
-		value = function.apply(index++, prev);
-		executed = true;
-		return value;
+		value = Optional.ofNullable(function.apply(index++, value.orElse(null)));
+		calculated = true;
 	}
 }
