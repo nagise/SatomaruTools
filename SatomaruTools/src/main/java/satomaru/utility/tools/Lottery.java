@@ -38,7 +38,7 @@ public interface Lottery<T> {
 		 * 
 		 * @param values ロッテリーで扱う要素
 		 */
-		public Builder(T[] values) {
+		private Builder(T[] values) {
 			this.values = Arrays.asList(values);
 		}
 
