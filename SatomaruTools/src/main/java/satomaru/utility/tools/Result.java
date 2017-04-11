@@ -6,37 +6,55 @@ import java.util.function.Consumer;
 /**
  * try-catchをオブジェクトとしてサポートします。
  * 
- * @param <T> 実行結果の型
+ * @param <T> 処理結果の型
  */
 public final class Result<T> {
 
 	/**
-	 * 実行する処理です。
+	 * 処理を行います。
 	 * 
-	 * @param <T> 実行結果の型
+	 * @param <T> 処理結果の型
 	 */
 	public interface Invoker<T> {
 
 		/**
-		 * 処理を実行します。
+		 * 処理を行います。
 		 * 
-		 * @return 実行結果
-		 * @throws Exception 実行中に発生した例外
+		 * @return 処理結果
+		 * @throws Exception 処理中に発生した例外
 		 */
 		T invoke() throws Exception;
 	}
 
 	/**
-	 * 処理を実行して、リザルトのインスタンスを作成します。
+	 * 処理を行います。
+	 *
+	 * @param <T> 処理対象の型
+	 * @param <R> 処理結果の型
+	 */
+	public interface Processor<T, R> {
+
+		/**
+		 * 処理を行います。
+		 * 
+		 * @param value 処理対象
+		 * @return 処理結果
+		 * @throws Exception 処理中に発生した例外
+		 */
+		R process(T value) throws Exception;
+	}
+
+	/**
+	 * 処理を行い、リザルトのインスタンスを作成します。
 	 * 
 	 * <p>
-	 * 実行結果がnullの場合は、NullPointerExceptionが発生した扱いになります。
+	 * 処理結果がnullの場合は、NullPointerExceptionが発生した扱いになります。
 	 * </p>
 	 * 
-	 * @param invoker 実行する処理
+	 * @param invoker 処理を行う関数
 	 * @return リザルトのインスタンス
 	 */
-	public static <T> Result<T> of(Invoker<T> invoker) {
+	public static <T> Result<T> of(Invoker<? extends T> invoker) {
 		try {
 			return new Result<>(Optional.of(invoker.invoke()), Optional.empty());
 		} catch (Exception e) {
@@ -62,9 +80,25 @@ public final class Result<T> {
 	}
 
 	/**
-	 * 例外が発生しなかった場合、実行結果を評価します。
+	 * 例外が発生しなかった場合、処理結果をさらに処理します。
 	 * 
-	 * @param consumer 評価する関数
+	 * <p>
+	 * 処理結果がnullの場合は、NullPointerExceptionが発生した扱いになります。
+	 * </p>
+	 * 
+	 * @param processor 処理結果をさらに処理する関数
+	 * @return 処理した後のインスタンス
+	 */
+	public <R> Result<R> process(Processor<? super T, ? extends R> processor) {
+		return (value.isPresent())
+				? of(() -> processor.process(value.get()))
+				: new Result<>(Optional.empty(), exception);
+	}
+
+	/**
+	 * 例外が発生しなかった場合、処理結果を評価します。
+	 * 
+	 * @param consumer 処理結果を評価する関数
 	 * @return このインスタンス自身
 	 */
 	public Result<T> whenOk(Consumer<? super T> consumer) {
@@ -75,7 +109,7 @@ public final class Result<T> {
 	/**
 	 * 例外が発生した場合、その例外を評価します。
 	 * 
-	 * @param consumer 評価する関数
+	 * @param consumer 例外を評価する関数
 	 * @return このインスタンス自身
 	 */
 	public Result<T> whenNg(Consumer<? super Exception> consumer) {
@@ -87,7 +121,7 @@ public final class Result<T> {
 	 * 指定された例外、またはそのサブクラスの例外が発生した場合、その例外を評価します。
 	 * 
 	 * @param type 評価対象となる例外
-	 * @param catcher 評価する関数
+	 * @param consumer 例外を評価する関数
 	 * @return このインスタンス自身
 	 */
 	public <E extends Exception> Result<T> when(Class<E> type, Consumer<? super E> consumer) {
@@ -139,5 +173,15 @@ public final class Result<T> {
 	 */
 	public T unwrap() throws Exception {
 		return value.orElseThrow(exception::get);
+	}
+
+	/**
+	 * 文字列表現を取得します。
+	 * 
+	 * @return 文字列表現
+	 */
+	@Override
+	public String toString() {
+		return value.map(Object::toString).orElseGet(() -> exception.map(Object::toString).get());
 	}
 }

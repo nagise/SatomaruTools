@@ -7,6 +7,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import satomaru.utility.tools.Pair;
+import satomaru.utility.tools.Result;
 
 /**
  * Java Stream API にこういう機能があったらいいなあ的な妄想を書きなぐりました。
@@ -40,6 +41,16 @@ public interface StreamEx<T> {
 	 */
 	default <U> PairStream<T, U> pair(Function<T, U> mapper) {
 		return new PairStreamImpl<>(unwrap().map(t -> new Pair<>(t, mapper.apply(t))));
+	}
+
+	/**
+	 * 例外をサポートする拡張 Stream を作成します。
+	 * 
+	 * @param processor 各要素を処理する関数
+	 * @return 例外をサポートする拡張 Stream
+	 */
+	default <R> ResultStream<R> process(Result.Processor<T, R> processor) {
+		return new ResultStreamImpl<R>(unwrap().map(e -> Result.of(() -> processor.process(e))));
 	}
 
 	/**
