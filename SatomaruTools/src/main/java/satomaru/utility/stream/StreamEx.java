@@ -39,7 +39,7 @@ public interface StreamEx<T> {
 	 * @param mapper 現在の値から2つめの値を作成する関数
 	 * @return 現在の値と、関数によって作成された値の、2つの値を扱う拡張 Stream
 	 */
-	default <U> PairStream<T, U> pair(Function<T, U> mapper) {
+	default <U> PairStream<T, U> pair(Function<? super T, U> mapper) {
 		return new PairStreamImpl<>(unwrap().map(t -> new Pair<>(t, mapper.apply(t))));
 	}
 
@@ -53,7 +53,7 @@ public interface StreamEx<T> {
 	 * @param processor 各要素を処理する関数
 	 * @return 例外をサポートする拡張 Stream
 	 */
-	default <R> ResultStream<R> process(Result.Processor<T, R> processor) {
+	default <R> ResultStream<R> process(Result.Processor<? super T, R> processor) {
 		return new ResultStreamImpl<R>(unwrap().map(t -> Result.of(() -> processor.process(t))));
 	}
 
