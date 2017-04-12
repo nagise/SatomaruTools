@@ -1,4 +1,4 @@
-package satomaru.utility.tools;
+package satomaru.utility.stream;
 
 import static org.junit.Assert.*;
 
@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.junit.Test;
 
 import satomaru.utility.stream.StreamEx;
+import satomaru.utility.tools.Result;
 
 /**
  * try-catch をサポートした拡張 Stream のテストケース。

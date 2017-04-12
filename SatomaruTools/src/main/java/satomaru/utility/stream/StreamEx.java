@@ -46,11 +46,15 @@ public interface StreamEx<T> {
 	/**
 	 * 例外をサポートする拡張 Stream を作成します。
 	 * 
+	 * <p>
+	 * 関数の結果がnullの場合は、NullPointerExceptionが発生した扱いになります。
+	 * </p>
+	 * 
 	 * @param processor 各要素を処理する関数
 	 * @return 例外をサポートする拡張 Stream
 	 */
 	default <R> ResultStream<R> process(Result.Processor<T, R> processor) {
-		return new ResultStreamImpl<R>(unwrap().map(e -> Result.of(() -> processor.process(e))));
+		return new ResultStreamImpl<R>(unwrap().map(t -> Result.of(() -> processor.process(t))));
 	}
 
 	/**

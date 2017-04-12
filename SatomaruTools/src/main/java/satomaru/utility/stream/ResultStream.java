@@ -14,9 +14,9 @@ import satomaru.utility.tools.Result.Processor;
 public interface ResultStream<T> {
 
 	/**
-	 * リザルトの Stream にマッピングします。
+	 * Result の Stream にマッピングします。
 	 * 
-	 * @return リザルトの Stream
+	 * @return Result の Stream
 	 */
 	Stream<Result<T>> mapToResult();
 

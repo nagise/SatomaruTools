@@ -17,9 +17,9 @@ import satomaru.utility.tools.Pair;
 public interface PairStream<T, U> {
 
 	/**
-	 * ペアの Stream にマッピングします。
+	 * Pair の Stream にマッピングします。
 	 * 
-	 * @return ペアの Stream
+	 * @return Pair の Stream
 	 */
 	Stream<Pair<T, U>> mapToPair();
 
