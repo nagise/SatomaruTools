@@ -65,6 +65,17 @@ public interface StreamEx<T> {
 	/**
 	 * インスタンスを生成します。
 	 * 
+	 * @param values 値
+	 * @return インスタンス
+	 */
+	@SafeVarargs
+	static <T> StreamEx<T> of(T... values) {
+		return of(Stream.of(values));
+	}
+
+	/**
+	 * インスタンスを生成します。
+	 * 
 	 * @param stream 通常の Stream
 	 * @return インスタンス
 	 */
@@ -104,7 +115,7 @@ public interface StreamEx<T> {
 	 * @param second 2つ目のイテレーター
 	 * @return PairStream
 	 */
-	public static <F, S> PairStream<F, S> of(Iterator<F> first, Iterator<S> second) {
+	public static <F, S> PairStream<F, S> zip(Iterator<F> first, Iterator<S> second) {
 		return new PairStreamImpl<>(
 				StreamSupport.stream(
 						Spliterators.spliteratorUnknownSize(
@@ -118,17 +129,6 @@ public interface StreamEx<T> {
 						false
 				)
 		);
-	}
-
-	/**
-	 * インスタンスを生成します。
-	 * 
-	 * @param values 値
-	 * @return インスタンス
-	 */
-	@SafeVarargs
-	static <T> StreamEx<T> of(T... values) {
-		return of(Stream.of(values));
 	}
 
 	/**

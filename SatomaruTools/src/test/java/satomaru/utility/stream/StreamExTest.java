@@ -20,7 +20,7 @@ public class StreamExTest {
 	 */
 	@Test
 	public void testZip() {
-		List<String> actual = StreamEx.of(Iterators.counter(), Iterators.array("foo", "bar", "baz"))
+		List<String> actual = StreamEx.zip(Iterators.counter(), Iterators.array("foo", "bar", "baz"))
 			.map((i, value) -> String.format("%d : %s", i, value))
 			.collect(Collectors.toList());
 
