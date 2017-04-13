@@ -11,7 +11,7 @@ import satomaru.utility.tools.Result.Processor;
  * 
  * @param <T> 処理結果の型
  */
-final class ResultStreamImpl<T> implements ResultStream<T> {
+public final class ResultStreamImpl<T> implements ResultStream<T> {
 
 	/** 元となる Stream。 */
 	private final Stream<Result<T>> stream;

@@ -11,7 +11,7 @@ import java.util.stream.Stream;
  * @param <P> 呼び出したい処理部品
  * @param <T> 要素
  */
-final class InjectedStreamImpl<P, T> implements InjectedStream<P, T> {
+public final class InjectedStreamImpl<P, T> implements InjectedStream<P, T> {
 
 	/** 処理を委譲する Stream。 */
 	private final Stream<T> stream;

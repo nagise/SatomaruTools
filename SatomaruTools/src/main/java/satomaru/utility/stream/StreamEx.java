@@ -1,11 +1,16 @@
 package satomaru.utility.stream;
 
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+import satomaru.utility.iterator.FunctionIterator;
 import satomaru.utility.tools.Pair;
 import satomaru.utility.tools.Result;
 
@@ -75,6 +80,44 @@ public interface StreamEx<T> {
 	 */
 	static <T> StreamEx<T> of(Collection<T> collection) {
 		return of(collection.stream());
+	}
+
+	/**
+	 * インスタンスを生成します。
+	 * 
+	 * @param iterator イテレーター
+	 * @return インスタンス
+	 */
+	static <T> StreamEx<T> of(Iterator<T> iterator) {
+		Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED);
+		return of(StreamSupport.stream(spliterator, false));
+	}
+
+	/**
+	 * 2つのイテレーターから PairStream を作成します。
+	 * 
+	 * <p>
+	 * どちらかのイテレーターが終了するか、または null を返却した時点で、この PairStream は終了します。
+	 * </p>
+	 * 
+	 * @param first 1つ目のイテレーター
+	 * @param second 2つ目のイテレーター
+	 * @return PairStream
+	 */
+	public static <F, S> PairStream<F, S> of(Iterator<F> first, Iterator<S> second) {
+		return new PairStreamImpl<>(
+				StreamSupport.stream(
+						Spliterators.spliteratorUnknownSize(
+								FunctionIterator.of(
+										() -> (first.hasNext() && second.hasNext())
+												? new Pair<>(first.next(), second.next())
+												: null
+								),
+								Spliterator.ORDERED
+						),
+						false
+				)
+		);
 	}
 
 	/**

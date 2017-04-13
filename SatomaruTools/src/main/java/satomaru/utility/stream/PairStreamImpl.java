@@ -14,7 +14,7 @@ import satomaru.utility.tools.Pair;
  * @param <T> 1つ目の値
  * @param <U> 2つ目の値
  */
-final class PairStreamImpl<T, U> implements PairStream<T, U> {
+public final class PairStreamImpl<T, U> implements PairStream<T, U> {
 
 	/** 元となる Stream。 */
 	private final Stream<Pair<T, U>> stream;
