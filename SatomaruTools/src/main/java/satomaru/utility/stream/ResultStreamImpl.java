@@ -1,6 +1,7 @@
 package satomaru.utility.stream;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import satomaru.utility.tools.Result;
@@ -29,8 +30,16 @@ public final class ResultStreamImpl<T> implements ResultStream<T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Stream<Result<T>> mapToResult() {
-		return stream;
+	public StreamEx<Result<T>> mapToEx() {
+		return () -> stream;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public <X> StreamEx<X> mapToEx(Function<Result<? super T>, X> mapper) {
+		return () -> stream.map(mapper);
 	}
 
 	/**

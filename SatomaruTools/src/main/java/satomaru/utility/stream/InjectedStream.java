@@ -39,10 +39,10 @@ interface InjectedStream<P, T> {
 	InjectedStream<P, T> filter(BiPredicate<P, ? super T> predicate);
 
 	/**
-	 * 処理部品のインスタンスを確定して、通常の Stream を返却します。
+	 * 処理部品のインスタンスを確定して、拡張 Stream にマッピングします。
 	 * 
 	 * @param processor 処理部品のインスタンス
 	 * @return 通常の Stream
 	 */
-	Stream<T> dependOn(P processor);
+	StreamEx<T> mapToEx(P processor);
 }

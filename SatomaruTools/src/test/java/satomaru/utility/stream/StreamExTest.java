@@ -44,7 +44,7 @@ public class StreamExTest {
 			}
 		};
 
-		List<Integer> actual = stream.dependOn(myModel).collect(Collectors.toList());
+		List<Integer> actual = stream.mapToEx(myModel).unwrap().collect(Collectors.toList());
 		assertEquals(Arrays.asList(1, 2), actual);
 	}
 
@@ -56,7 +56,8 @@ public class StreamExTest {
 		List<Result<BigDecimal>> actual = StreamEx.of(3L, 1L, null)
 			.process(BigDecimal::valueOf)
 			.process(d -> d.divide(BigDecimal.valueOf(3)))
-			.mapToResult()
+			.mapToEx()
+			.unwrap()
 			.collect(Collectors.toList());
 
 		assertEquals(3, actual.size());
@@ -91,7 +92,8 @@ public class StreamExTest {
 	@Test
 	public void testZip() {
 		List<String> actual = StreamEx.zip(Iterators.counter(), Iterators.array("foo", "bar", "baz"))
-			.map((i, value) -> String.format("%d : %s", i, value))
+			.mapToEx((i, value) -> String.format("%d : %s", i, value))
+			.unwrap()
 			.collect(Collectors.toList());
 
 		assertEquals(Arrays.asList("1 : foo", "2 : bar", "3 : baz"), actual);

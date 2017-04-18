@@ -22,7 +22,7 @@ import satomaru.utility.tools.Result;
 public interface StreamEx<T> {
 
 	/**
-	 * 通常の Stream を取り出します。
+	 * 通常の Stream にマッピングします。
 	 * 
 	 * @return 通常のStream
 	 */

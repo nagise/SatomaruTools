@@ -4,7 +4,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 import satomaru.utility.tools.Pair;
 
@@ -17,19 +16,19 @@ import satomaru.utility.tools.Pair;
 public interface PairStream<T, U> {
 
 	/**
-	 * Pair の Stream にマッピングします。
+	 * Pair の拡張 stream にマッピングします。
 	 * 
-	 * @return Pair の Stream
+	 * @return Pair の拡張 stream
 	 */
-	Stream<Pair<T, U>> mapToPair();
+	StreamEx<Pair<T, U>> mapToEx();
 
 	/**
-	 * 2つの値から新しい Stream にマッピングします。
+	 * 拡張 Stream にマッピングします。
 	 * 
 	 * @param mapper 2つの値をマッピングする関数
 	 * @return マッピングされた新しい Stream
 	 */
-	<X> Stream<X> map(BiFunction<? super T, ? super U, ? extends X> mapper);
+	<X> StreamEx<X> mapToEx(BiFunction<? super T, ? super U, ? extends X> mapper);
 
 	/**
 	 * 1つ目の値だけが別の型にマッピングされた、新しい拡張 Stream を作成します。

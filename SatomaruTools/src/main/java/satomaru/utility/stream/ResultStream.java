@@ -1,7 +1,7 @@
 package satomaru.utility.stream;
 
 import java.util.function.Consumer;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
 import satomaru.utility.tools.Result;
 import satomaru.utility.tools.Result.Processor;
@@ -14,11 +14,19 @@ import satomaru.utility.tools.Result.Processor;
 public interface ResultStream<T> {
 
 	/**
-	 * Result の Stream にマッピングします。
+	 * Result の拡張 Stream にマッピングします。
 	 * 
-	 * @return Result の Stream
+	 * @return Result の拡張 Stream
 	 */
-	Stream<Result<T>> mapToResult();
+	StreamEx<Result<T>> mapToEx();
+
+	/**
+	 * 拡張 Stream にマッピングします。
+	 * 
+	 * @param mapper マッピングする関数
+	 * @return 拡張 Stream
+	 */
+	<X> StreamEx<X> mapToEx(Function<Result<? super T>, X> mapper);
 
 	/**
 	 * 例外が発生しなかった場合、処理結果をさらに処理します。

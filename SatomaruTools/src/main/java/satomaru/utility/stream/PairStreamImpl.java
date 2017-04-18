@@ -32,16 +32,16 @@ public final class PairStreamImpl<T, U> implements PairStream<T, U> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Stream<Pair<T, U>> mapToPair() {
-		return stream;
+	public StreamEx<Pair<T, U>> mapToEx() {
+		return () -> stream;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public <X> Stream<X> map(BiFunction<? super T, ? super U, ? extends X> mapper) {
-		return stream.map(p -> p.compute(mapper));
+	public <X> StreamEx<X> mapToEx(BiFunction<? super T, ? super U, ? extends X> mapper) {
+		return () -> stream.map(p -> p.compute(mapper));
 	}
 
 	/**

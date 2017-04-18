@@ -57,8 +57,8 @@ public final class InjectedStreamImpl<P, T> implements InjectedStream<P, T> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Stream<T> dependOn(P processor) {
+	public StreamEx<T> mapToEx(P processor) {
 		this.processor.set(processor);
-		return stream;
+		return () -> stream;
 	}
 }
