@@ -1,4 +1,4 @@
-package satomaru.utility.stream.collection;
+package satomaru.utility.collection;
 
 import static org.junit.Assert.*;
 
